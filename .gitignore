@@ -1,0 +1,13 @@
+config.json
+secrets/
+.vendor/
+.venv/
+__pycache__/
+*.log
+*.mitm
+*.pcap
+*.etl
+*.bin
+*.jpg
+*.jpeg
+*.mp4

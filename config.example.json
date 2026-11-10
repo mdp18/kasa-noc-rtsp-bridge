@@ -1,0 +1,19 @@
+{
+  "go2rtc_path": "C:\\tools\\go2rtc\\go2rtc.exe",
+  "go2rtc_config": "C:\\tools\\go2rtc\\go2rtc.yaml",
+  "public_host": "192.0.2.20",
+  "cameras": [
+    {
+      "name": "camera1",
+      "host": "192.0.2.10",
+      "proxy_port": 19444,
+      "psk_file": "camera1-psk.json"
+    },
+    {
+      "name": "camera2",
+      "host": "192.0.2.11",
+      "proxy_port": 19445,
+      "psk_file": "camera2-psk.json"
+    }
+  ]
+}

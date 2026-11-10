@@ -1,0 +1,5 @@
+# Replace the credential placeholders, then copy the streams into go2rtc.yaml.
+# Email: URL-encode @ as %40. Password: base64-encode the plaintext password.
+streams:
+  camera1: kasa://EMAIL_URL_ENCODED:BASE64_PASSWORD@127.0.0.1:19444/https/stream/mixed
+  camera2: kasa://EMAIL_URL_ENCODED:BASE64_PASSWORD@127.0.0.1:19445/https/stream/mixed
