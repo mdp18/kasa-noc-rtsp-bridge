@@ -627,12 +627,12 @@ class NocAuthContext(BaseAuthContext):
             if not dev_noc_pem or not proof_hex:
                 raise KasaException("Device proof missing fields")
 
-            dev_cert = x509.load_pem_x509_certificate(dev_noc_pem.encode())
-            dev_cert_der = dev_cert.public_bytes(serialization.Encoding.DER)
+            # The device certificate's names may contain characters invalid for their
+            # PrintableString type, which cryptography rejects; asn1crypto parses lazily.
+            dev_cert_der = asn1_pem.unarmor(dev_noc_pem.encode())[2]
             dev_ica_der = b""
             if dev_ica_pem:
-                ica_cert = x509.load_pem_x509_certificate(dev_ica_pem.encode())
-                dev_ica_der = ica_cert.public_bytes(serialization.Encoding.DER)
+                dev_ica_der = asn1_pem.unarmor(dev_ica_pem.encode())[2]
 
             if self._dev_pub_bytes is None or self._ephemeral_pub_bytes is None:
                 raise KasaException("Missing public keys for device proof verify")
@@ -644,7 +644,10 @@ class NocAuthContext(BaseAuthContext):
                 + self._ephemeral_pub_bytes
             )
             signature = base64.b64decode(proof_hex)
-            dev_pub = cast(ec.EllipticCurvePublicKey, dev_cert.public_key())
+            dev_spki = asn1_x509.Certificate.load(dev_cert_der).public_key.dump()
+            dev_pub = cast(
+                ec.EllipticCurvePublicKey, serialization.load_der_public_key(dev_spki)
+            )
             dev_pub.verify(signature, message, ec.ECDSA(hashes.SHA256()))
         except InvalidSignature as exc:
             raise KasaException("Invalid NOC device proof signature") from exc
